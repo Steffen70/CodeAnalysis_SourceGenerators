@@ -1,40 +1,40 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 using Generated;
 
 namespace MyProgram
 {
-    [JsonSerializable]
-    public class Person
+    [MemoryDiagnoser]
+    public class Program
     {
-        public int Age { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
-
-    [JsonSerializable]
-    public class Thing
-    {
-        public string Name { get; set; }
-        public float Weight { get; set; }
-    }
-
-    class Program
-    {
+        private object _object = new Test();
         static void Main(string[] args)
         {
-            JsonSerializer serializer = new JsonSerializer();
-            GeneratedSerializer generatedSerializer = new GeneratedSerializer();
+            //BenchmarkRunner.Run<Program>();
+            new Program().UseJsonSerializer();
+        }
 
-            Person tony = new Person { Age = 100, FirstName = "Tony", LastName = "Dwire" };
-            Thing table = new Thing { Name = "Table", Weight = 56 };
+        //Original serializer
+        [Benchmark]
+        public void UseJsonSerializer() => UseSerializer(new JsonSerializer());
 
-            Console.WriteLine("Reflection:");
-            Console.WriteLine("\t" + serializer.Serialize(tony));
-            Console.WriteLine("\t" + serializer.Serialize(table));
+        //Serializer using LINQ
+        [Benchmark]
+        public void UseJsonSerializerReworked() => UseSerializer(new JsonSerializerReworked());
 
-            Console.WriteLine("Generator:");
-            Console.WriteLine("\t" + generatedSerializer.Serialize(tony));
-            Console.WriteLine("\t" + generatedSerializer.Serialize(table));
+        //Original generated serializer
+        [Benchmark]
+        public void UseGeneratedSerializer() => UseSerializer(new GeneratedSerializer());
+
+        public void UseSerializer(dynamic Serializer)
+        {
+            Console.WriteLine($"{Serializer.GetType().Name}");
+            Console.WriteLine("\t" + Serializer.Serialize(_object));
         }
     }
 }
