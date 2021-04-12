@@ -34,7 +34,9 @@ namespace Generated
             CSharpParseOptions options = (context.Compilation as CSharpCompilation).SyntaxTrees[0].Options as CSharpParseOptions;
 
             SyntaxTree attributeSyntaxTree = CSharpSyntaxTree.ParseText(SourceText.From(attributeText, Encoding.UTF8), options);
-            Compilation compilation = context.Compilation.AddSyntaxTrees(attributeSyntaxTree);
+
+            Compilation compilation = context.Compilation
+                .AddSyntaxTrees(attributeSyntaxTree);
 
             INamedTypeSymbol attributeSymbol = compilation.GetTypeByMetadataName("Generated.JsonSerializableAttribute");
             INamedTypeSymbol stringSymbol = compilation.GetTypeByMetadataName("System.String");

@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace SerializerGenerator
 {
+    [Generator]
     public class ObjectGenerator : ISourceGenerator
     {
         private readonly Dictionary<char, char> _letters = new Dictionary<char, char> {
@@ -23,19 +24,21 @@ namespace SerializerGenerator
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var properties = ZeroTo(20).ToList();
+            var properties = ZeroTo(60).ToList();
 
             //Create class
             var sb = new StringBuilder();
-            sb.Append("namespace MyProgram{ [JsonSerializable] public class Test {");
+            sb.Append("namespace MyProgram{ public partial class Test {");
 
             //Add properies
             properties.ForEach(p => sb.Append($"public string {p} {{ get; set; }}"));
 
             //Create constructor
-            sb.Append("public Test(){");
-            sb.Append(string.Join("; ", properties.Select(p => $"{p} = \"p\"")));
-            sb.Append(";}}}");
+            sb.Append("public static Test Create(){");
+            sb.Append("var t = new Test();");
+            sb.Append(string.Join("; ", properties.Select(p => $"t.{p} = \"{p}\"")));
+            sb.Append("; return t;");
+            sb.Append("}}}");
 
             context.AddSource("Test", SourceText.From(sb.ToString(), Encoding.UTF8));
         }
@@ -50,7 +53,6 @@ namespace SerializerGenerator
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
         }
     }
 }

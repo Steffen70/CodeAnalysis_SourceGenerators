@@ -5,14 +5,14 @@ using System.Dynamic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using Generated;
+using System.Reflection;
 
 namespace MyProgram
 {
     [MemoryDiagnoser]
     public class Program
     {
-        private object _object = new Test();
+        private Test _object = Test.Create();
         static void Main(string[] args)
         {
             //BenchmarkRunner.Run<Program>();
