@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace SerializerGenerator
+namespace TestObjectGenerator
 {
     [Generator]
     public class ObjectGenerator : ISourceGenerator
@@ -28,7 +28,7 @@ namespace SerializerGenerator
 
             //Create class
             var sb = new StringBuilder();
-            sb.Append("namespace MyProgram{ public partial class Test {");
+            sb.Append("namespace GeneratorOutput{ [JsonSerializable] public partial class Test {");
 
             //Add properies
             properties.ForEach(p => sb.Append($"public string {p} {{ get; set; }}"));

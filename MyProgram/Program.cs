@@ -6,6 +6,7 @@ using System.Linq;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using System.Reflection;
+using GeneratorOutput;
 
 namespace MyProgram
 {
